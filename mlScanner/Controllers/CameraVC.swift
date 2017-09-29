@@ -13,9 +13,10 @@ class CameraVC: UIViewController {
     
     @IBOutlet var identificationLabel: UILabel!
     @IBOutlet var confidentLabel: UILabel!
-    @IBOutlet var flashButton: UIButton!
+    @IBOutlet var roundedLabelView: RoundedShadowView!
+    @IBOutlet var flashButton: RoundedShadowButton!
     @IBOutlet var cameraView: UIView!
-    @IBOutlet var thumbnailCameraImage: UIImageView!
+    @IBOutlet var thumbnailCameraImage: RoundedShadowImage!
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -15,6 +15,8 @@
 		E765AF6C1F7EDBE5001529CE /* mlScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF6B1F7EDBE5001529CE /* mlScannerTests.swift */; };
 		E765AF771F7EDBE5001529CE /* mlScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF761F7EDBE5001529CE /* mlScannerUITests.swift */; };
 		E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */; };
+		E765AF8B1F7EE888001529CE /* RoundedShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF8A1F7EE888001529CE /* RoundedShadowButton.swift */; };
+		E765AF8D1F7EE9FE001529CE /* RoundedShadowImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF8C1F7EE9FE001529CE /* RoundedShadowImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,8 @@
 		E765AF781F7EDBE5001529CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E765AF871F7EE2E1001529CE /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNet.mlmodel; sourceTree = "<group>"; };
 		E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowView.swift; sourceTree = "<group>"; };
+		E765AF8A1F7EE888001529CE /* RoundedShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowButton.swift; sourceTree = "<group>"; };
+		E765AF8C1F7EE9FE001529CE /* RoundedShadowImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */,
+				E765AF8A1F7EE888001529CE /* RoundedShadowButton.swift */,
+				E765AF8C1F7EE9FE001529CE /* RoundedShadowImage.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -291,6 +297,8 @@
 				E765AF591F7EDBE5001529CE /* CameraVC.swift in Sources */,
 				E765AF571F7EDBE5001529CE /* AppDelegate.swift in Sources */,
 				E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */,
+				E765AF8B1F7EE888001529CE /* RoundedShadowButton.swift in Sources */,
+				E765AF8D1F7EE9FE001529CE /* RoundedShadowImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
