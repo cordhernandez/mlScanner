@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		E765AF571F7EDBE5001529CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF561F7EDBE5001529CE /* AppDelegate.swift */; };
-		E765AF591F7EDBE5001529CE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF581F7EDBE5001529CE /* ViewController.swift */; };
+		E765AF591F7EDBE5001529CE /* CameraVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF581F7EDBE5001529CE /* CameraVC.swift */; };
 		E765AF5C1F7EDBE5001529CE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E765AF5A1F7EDBE5001529CE /* Main.storyboard */; };
 		E765AF5E1F7EDBE5001529CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E765AF5D1F7EDBE5001529CE /* Assets.xcassets */; };
 		E765AF611F7EDBE5001529CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E765AF5F1F7EDBE5001529CE /* LaunchScreen.storyboard */; };
 		E765AF6C1F7EDBE5001529CE /* mlScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF6B1F7EDBE5001529CE /* mlScannerTests.swift */; };
 		E765AF771F7EDBE5001529CE /* mlScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF761F7EDBE5001529CE /* mlScannerUITests.swift */; };
+		E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +37,7 @@
 /* Begin PBXFileReference section */
 		E765AF531F7EDBE5001529CE /* mlScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mlScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765AF561F7EDBE5001529CE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E765AF581F7EDBE5001529CE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E765AF581F7EDBE5001529CE /* CameraVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraVC.swift; sourceTree = "<group>"; };
 		E765AF5B1F7EDBE5001529CE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E765AF5D1F7EDBE5001529CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E765AF601F7EDBE5001529CE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +48,8 @@
 		E765AF721F7EDBE5001529CE /* mlScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mlScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765AF761F7EDBE5001529CE /* mlScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mlScannerUITests.swift; sourceTree = "<group>"; };
 		E765AF781F7EDBE5001529CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E765AF871F7EE2E1001529CE /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNet.mlmodel; sourceTree = "<group>"; };
+		E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +100,10 @@
 		E765AF551F7EDBE5001529CE /* mlScanner */ = {
 			isa = PBXGroup;
 			children = (
+				E765AF861F7EE171001529CE /* Resources */,
+				E765AF841F7EE15F001529CE /* Views */,
+				E765AF851F7EE16B001529CE /* Controllers */,
 				E765AF561F7EDBE5001529CE /* AppDelegate.swift */,
-				E765AF581F7EDBE5001529CE /* ViewController.swift */,
 				E765AF5A1F7EDBE5001529CE /* Main.storyboard */,
 				E765AF5D1F7EDBE5001529CE /* Assets.xcassets */,
 				E765AF5F1F7EDBE5001529CE /* LaunchScreen.storyboard */,
@@ -123,6 +128,30 @@
 				E765AF781F7EDBE5001529CE /* Info.plist */,
 			);
 			path = mlScannerUITests;
+			sourceTree = "<group>";
+		};
+		E765AF841F7EE15F001529CE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E765AF851F7EE16B001529CE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				E765AF581F7EDBE5001529CE /* CameraVC.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		E765AF861F7EE171001529CE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E765AF871F7EE2E1001529CE /* SqueezeNet.mlmodel */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,8 +288,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E765AF591F7EDBE5001529CE /* ViewController.swift in Sources */,
+				E765AF591F7EDBE5001529CE /* CameraVC.swift in Sources */,
 				E765AF571F7EDBE5001529CE /* AppDelegate.swift in Sources */,
+				E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
