@@ -11,6 +11,11 @@ import CoreML
 import UIKit
 import Vision
 
+enum FlashState {
+    case off
+    case on
+}
+
 class CameraVC: UIViewController {
     
     @IBOutlet var identificationLabel: UILabel!
