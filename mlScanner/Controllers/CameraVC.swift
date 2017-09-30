@@ -124,6 +124,63 @@ class CameraVC: UIViewController {
 
     
 
+//MARK: AVCapturePhoto Delegate Methods
+extension CameraVC: AVCapturePhotoCaptureDelegate {
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        
+        if let error = error {
+            
+            debugPrint("Error Processing Photo, error description: \(error.localizedDescription)")
+            return
+        }
+        
+        photoData = photo.fileDataRepresentation()
+        
+        do {
+            let model = try VNCoreMLModel(for: SqueezeNet().model)
+            let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
+                
+                guard let results = request.results as? [VNClassificationObservation] else { return }
+                
+                for classification in results {
+                    
+                    if classification.confidence < 0.5 {
+                        
+                        let unknownMessage = "I'm sorry I don't know what this is. Please try again."
+                        
+                        self.identificationLabel.text = unknownMessage
+                        self.synthesizeSpeech(fromString: unknownMessage)
+                        
+                        self.confidentLabel.isHidden = true
+                        break
+                    }
+                    else {
+                        let identification = classification.identifier
+                        let confidence = Int(classification.confidence * 100)
+                        
+                        self.identificationLabel.text = identification
+                        self.confidentLabel.text = "CONFIDENCE: \(confidence)%"
+                        
+                        let completeSentence = "This looks like a \(identification) and I'm \(confidence) percent sure!"
+                        self.synthesizeSpeech(fromString: completeSentence)
+                        break
+                    }
+                }
+                
+            })
+            
+            let handler = VNImageRequestHandler(data: photoData ?? Data())
+            try handler.perform([request])
+        }
+        catch {
+            debugPrint("Error with Core ML Model, error description: \(error)")
+        }
+        
+        let photoImage = UIImage(data: photoData ?? Data())
+        self.thumbnailCameraImage.image = photoImage
+    }
+}
 
 //MARK: AV Speech Synthesizer Delegate Methods
 extension CameraVC: AVSpeechSynthesizerDelegate {
@@ -137,4 +194,5 @@ extension CameraVC: AVSpeechSynthesizerDelegate {
     
     
 }
+
 
