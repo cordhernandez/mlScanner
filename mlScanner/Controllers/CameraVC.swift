@@ -24,7 +24,15 @@ class CameraVC: UIViewController {
     @IBOutlet var flashButton: RoundedShadowButton!
     @IBOutlet var cameraView: UIView!
     @IBOutlet var thumbnailCameraImage: RoundedShadowImage!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     
+    var captureSession: AVCaptureSession!
+    var cameraOutput: AVCapturePhotoOutput!
+    var previewLayer: AVCaptureVideoPreviewLayer!
+    var photoData: Data?
+    var flashControlState: FlashState = .off
+    var speechSynthesizer = AVSpeechSynthesizer()
+ 
     override func viewDidLoad() {
         super.viewDidLoad()
         
