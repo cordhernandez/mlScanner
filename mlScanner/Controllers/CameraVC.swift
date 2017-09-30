@@ -7,7 +7,9 @@
 //
 
 import AVFoundation
+import CoreML
 import UIKit
+import Vision
 
 class CameraVC: UIViewController {
     
