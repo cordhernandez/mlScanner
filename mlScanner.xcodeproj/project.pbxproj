@@ -17,6 +17,7 @@
 		E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */; };
 		E765AF8B1F7EE888001529CE /* RoundedShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF8A1F7EE888001529CE /* RoundedShadowButton.swift */; };
 		E765AF8D1F7EE9FE001529CE /* RoundedShadowImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E765AF8C1F7EE9FE001529CE /* RoundedShadowImage.swift */; };
+		E765AF941F7F3A16001529CE /* SqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E765AF931F7F3A16001529CE /* SqueezeNet.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,10 +51,10 @@
 		E765AF721F7EDBE5001529CE /* mlScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mlScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E765AF761F7EDBE5001529CE /* mlScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mlScannerUITests.swift; sourceTree = "<group>"; };
 		E765AF781F7EDBE5001529CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E765AF871F7EE2E1001529CE /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNet.mlmodel; sourceTree = "<group>"; };
 		E765AF881F7EE3F9001529CE /* RoundedShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowView.swift; sourceTree = "<group>"; };
 		E765AF8A1F7EE888001529CE /* RoundedShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowButton.swift; sourceTree = "<group>"; };
 		E765AF8C1F7EE9FE001529CE /* RoundedShadowImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedShadowImage.swift; sourceTree = "<group>"; };
+		E765AF931F7F3A16001529CE /* SqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNet.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +156,7 @@
 		E765AF861F7EE171001529CE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				E765AF871F7EE2E1001529CE /* SqueezeNet.mlmodel */,
+				E765AF931F7F3A16001529CE /* SqueezeNet.mlmodel */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -294,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E765AF941F7F3A16001529CE /* SqueezeNet.mlmodel in Sources */,
 				E765AF591F7EDBE5001529CE /* CameraVC.swift in Sources */,
 				E765AF571F7EDBE5001529CE /* AppDelegate.swift in Sources */,
 				E765AF891F7EE3F9001529CE /* RoundedShadowView.swift in Sources */,
