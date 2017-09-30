@@ -123,6 +123,12 @@ class CameraVC: UIViewController {
     }
 
     
+    func synthesizeSpeech(fromString string: String) {
+        
+        let speechUtterance = AVSpeechUtterance(string: string)
+        speechSynthesizer.speak(speechUtterance)
+    }
+}
 
 //MARK: AVCapturePhoto Delegate Methods
 extension CameraVC: AVCapturePhotoCaptureDelegate {
