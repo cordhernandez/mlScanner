@@ -36,6 +36,17 @@ public class LOG
         case warn = 3
         /** Warns of a situation that impacted the user's experience. */
         case error = 4
+        
+        fileprivate var stringRepresentation: String
+        {
+            switch self
+            {
+                case .debug : return "DEBUG"
+                case .info : return "INFO"
+                case .warn : return "WARN"
+                case .error : return "ERROR"
+            }
+        }
     }
     
     /**
@@ -43,6 +54,31 @@ public class LOG
         It can be changed to [debug, info, warn, error]
      */
     public static var level = LogLevel.info
+    
+    /**
+        This is the time format used to format the timestamp
+     for a Log statement. By default it is set to:
+     `"yyyy-MM-dd HH:MM:ss"`.
+    */
+    public static var timeFormat = "MM/dd HH:MM:ss"
+    
+    /**
+        Decides whether log statements should include
+        the name of the file that generated the log statement.
+    */
+    public static var includeFilename = true
+    
+    /**
+        Decides whether log statements should include
+        the line number where the log statement was generated.
+    */
+    public static var includeLineNumber = true
+    
+    /**
+        Decides whether log statements should include
+        the name of the function where the log statement was generated.
+    */
+    public static var includeFunctionName = true
     
     
     /**
@@ -79,6 +115,7 @@ public class LOG
     }
     
     //MARK: Color Output
+    //This doesn't really work anymore with the new XCode versions.
     fileprivate static var shouldDisplayColor = false
     
     /**
@@ -107,16 +144,9 @@ extension LOG
      
         - Parameter message : The message to print
      */
-    public static func debug(_ message: String, function: String = #function)
+    public static func debug(_ message: @autoclosure () -> String, file: String = #file, function: String = #function, line: UInt = #line)
     {
-        if canPrint(level: .debug)
-        {
-            let now = dateToString(date: Date())
-            let log = "\(now) - [DEBUG] - \(function) - \(message)"
-            
-            noColor(log)
-        }
-
+        log(message: message, level: .debug, file: file, function: function, line: line)
     }
     
     /**
@@ -124,22 +154,9 @@ extension LOG
      
         - Parameter message: The message to print
      */
-    public static func info(_ message: String, function: String = #function)
+    public static func info(_ message: @autoclosure () -> String, file: String = #file, function: String = #function, line: UInt = #line)
     {
-        if canPrint(level: .info)
-        {
-            let now = dateToString(date: Date())
-            let log = "\(now) - [INFO] - \(function) - \(message)"
-            
-            if shouldDisplayColor
-            {
-                green(log)
-            }
-            else
-            {
-                noColor(log)
-            }
-        }
+        log(message: message, level: .info, file: file, function: function, line: line)
     }
     
     /**
@@ -147,22 +164,9 @@ extension LOG
      
         - Parameter message: The message to print
      */
-    public static func warn(_ message: String, function: String = #function)
+    public static func warn(_ message: @autoclosure () -> String, file: String = #file, function: String = #function, line: UInt = #line)
     {
-        if canPrint(level: .warn)
-        {
-            let now = dateToString(date: Date())
-            let log = "\(now) - [WARN] - \(function) - \(message)"
-            
-            if shouldDisplayColor
-            {
-                orange(log)
-            }
-            else
-            {
-                noColor(log)
-            }
-        }
+        log(message: message, level: .warn, file: file, function: function, line: line)
     }
     
     /**
@@ -170,24 +174,54 @@ extension LOG
      
         - Parameter message: The message to print
      */
-    public static func error(_ message: String, function: String = #function)
+    public static func error(_ message: @autoclosure () -> String, file: String = #file, function: String = #function, line: UInt = #line)
     {
-        if canPrint(level: .warn)
+        log(message: message, level: .error, file: file, function: function, line: line)
+    }
+
+    private static func log(message: () -> String, level: LogLevel, file: String, function: String, line: UInt)
+    {
+        if canPrint(level: level)
         {
             let now = dateToString(date: Date())
-            let log = "\(now) - [ERROR] - \(function) - \(message)"
+            
+            var finalMessage = "\(now) [\(level.stringRepresentation)]"
+            
+            if includeFilename
+            {
+                let _file = extractFilename(path: file)
+            
+                finalMessage += " - \(_file)"
+                
+                if includeFunctionName
+                {
+                    finalMessage += "."
+                }
+            }
+            
+            if includeFunctionName
+            {
+                finalMessage += "\(function)"
+            }
+            
+            if includeLineNumber
+            {
+                finalMessage += ":\(line)"
+            }
+            
+            finalMessage += " - \(message())"
             
             if shouldDisplayColor
             {
-                red(log)
+                red(finalMessage)
             }
             else
             {
-                noColor(log)
+                noColor(finalMessage)
             }
         }
     }
-
+    
 }
 
 private extension LOG
@@ -196,7 +230,8 @@ private extension LOG
     static func dateToString(date: Date) -> String
     {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd HH:MM:ss.sss"
+        formatter.dateFormat = timeFormat
+        
         return formatter.string(from: date)
     }
     
@@ -205,8 +240,18 @@ private extension LOG
         return (level.rawValue >= self.level.rawValue) && isEnabled
     }
     
+    static func extractFilename(path: String) -> String
+    {
+        let parts = path.components(separatedBy: "/")
+        guard let filename = parts.last else { return "" }
+        
+        let fileParts = filename.components(separatedBy: ".")
+        
+        return fileParts.first ?? ""
+    }
 }
 
+//MARK: Adds support for colored messages
 private extension LOG
 {
     
