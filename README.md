@@ -1,5 +1,5 @@
 # mlScanner
-Take a picture (Scan) any object and mlScanner will make a confident prediction on what that object is. 
+Take a picture (Scan) of any object and mlScanner will make a confident prediction on what that object is. 
 
 The picture below was taken with an actual device (iPhone 5)
 
