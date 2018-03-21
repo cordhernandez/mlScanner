@@ -6,6 +6,7 @@
 //  Copyright © 2017 Cordero Hernandez. All rights reserved.
 //
 
+import Archeota
 import AVFoundation
 import CoreML
 import UIKit
@@ -32,7 +33,7 @@ class CameraVC: UIViewController {
     var photoData: Data?
     var flashControlState: FlashState = .off
     var speechSynthesizer = AVSpeechSynthesizer()
- 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -49,10 +50,15 @@ class CameraVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        previewLayer.frame = cameraView.bounds
+        configurePreviewLayer()
     }
     
     @IBAction func flashButtonTapped(_ sender: Any) {
+        
+        manageFlashState()
+    }
+    
+    fileprivate func manageFlashState() {
         
         switch flashControlState {
             
@@ -64,6 +70,11 @@ class CameraVC: UIViewController {
             flashButton.setTitle("FLASH OFF", for: .normal)
             flashControlState = .off
         }
+    }
+    
+    fileprivate func configurePreviewLayer() {
+        
+        previewLayer.frame = cameraView.bounds
     }
     
     fileprivate func configureCaptureSession() {
@@ -86,20 +97,31 @@ class CameraVC: UIViewController {
             cameraOutput = AVCapturePhotoOutput()
             
             if captureSession.canAddOutput(cameraOutput) == true {
-                captureSession.addOutput(cameraOutput)
                 
-                previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                previewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-                previewLayer.connection?.videoOrientation = .portrait
+                captureSession.addOutput(cameraOutput)
+                let previewLayer = addPreviewLayer(withLayer: self.previewLayer, andFrom: captureSession)
                 
                 cameraView.layer.addSublayer(previewLayer)
                 cameraView.addGestureRecognizer(tap)
+                
                 captureSession.startRunning()
             }
         }
         catch {
-            debugPrint("Error trying to capture device input from camera, error description: \(error)")
+            LOG.error("Error trying to capture device input from camera, error description: \(error.localizedDescription)")
         }
+    }
+    
+    fileprivate func addPreviewLayer(withLayer layer: AVCaptureVideoPreviewLayer, andFrom session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
+        
+        var previewLayer = layer
+        let captureSession = session
+        
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+        previewLayer.connection?.videoOrientation = .portrait
+        
+        return previewLayer
     }
     
     @objc fileprivate func didTapCameraView() {
@@ -107,6 +129,12 @@ class CameraVC: UIViewController {
         self.cameraView.isUserInteractionEnabled = false
         self.activityIndicator.isHidden = false
         self.activityIndicator.startAnimating()
+        
+        let settings = setSettingsFlashMode()
+        cameraOutput.capturePhoto(with: settings, delegate: self)
+    }
+    
+    fileprivate func setSettingsFlashMode() -> AVCapturePhotoSettings {
         
         let settings = AVCapturePhotoSettings()
         settings.previewPhotoFormat = settings.embeddedThumbnailPhotoFormat
@@ -119,9 +147,8 @@ class CameraVC: UIViewController {
             settings.flashMode = .on
         }
         
-        cameraOutput.capturePhoto(with: settings, delegate: self)
+        return settings
     }
-
     
     func synthesizeSpeech(fromString string: String) {
         
@@ -147,44 +174,67 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
             let model = try VNCoreMLModel(for: SqueezeNet().model)
             let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
                 
-                guard let results = request.results as? [VNClassificationObservation] else { return }
-                
-                for classification in results {
-                    
-                    if classification.confidence < 0.5 {
-                        
-                        let unknownMessage = "I'm sorry I don't know what this is. Please try again."
-                        
-                        self.identificationLabel.text = unknownMessage
-                        self.synthesizeSpeech(fromString: unknownMessage)
-                        
-                        self.confidentLabel.isHidden = true
-                        break
-                    }
-                    else {
-                        let identification = classification.identifier
-                        let confidence = Int(classification.confidence * 100)
-                        
-                        self.identificationLabel.text = identification
-                        self.confidentLabel.text = "CONFIDENCE: \(confidence)%"
-                        
-                        let completeSentence = "This looks like a \(identification) and I'm \(confidence) percent sure!"
-                        self.synthesizeSpeech(fromString: completeSentence)
-                        break
-                    }
-                }
-                
-            })
+                self.getCoreMLRequest(from: request, and: error)
+                } as? VNRequestCompletionHandler)
             
             let handler = VNImageRequestHandler(data: photoData ?? Data())
             try handler.perform([request])
         }
         catch {
-            debugPrint("Error with Core ML Model, error description: \(error)")
+            LOG.error("Error with Core Ml Model, error description: \(error.localizedDescription)")
         }
         
         let photoImage = UIImage(data: photoData ?? Data())
         self.thumbnailCameraImage.image = photoImage
+    }
+    
+    func getCoreMLRequest(from request: VNRequest, and withError: NSError?) {
+        
+        if let error = withError {
+            
+            LOG.error("Error getting request from Core Ml Model, error description: \(error.localizedDescription)")
+            return
+        }
+        
+        guard let results = request.results as? [VNClassificationObservation] else {
+            
+            LOG.warn("Can't retreive request results from VNRequest")
+            return
+        }
+        
+        for classification in results {
+            
+            if classification.confidence < 0.5 {
+                
+                let message = "I'm sorry I don't know what this is. Please try again."
+                lowConfidenceMessage(message)
+                
+                break
+            }
+            else {
+                let identification = classification.identifier
+                let confidence = Int(classification.confidence * 100)
+                highConfidenceMessage(identification, confidence)
+                
+                break
+            }
+        }
+    }
+    
+    func lowConfidenceMessage(_ message: String) {
+        
+        self.identificationLabel.text = message
+        self.synthesizeSpeech(fromString: message)
+        self.confidentLabel.isHidden = true
+    }
+    
+    func highConfidenceMessage(_ message: String, _ confidence: Int) {
+        
+        self.identificationLabel.text = message
+        self.confidentLabel.text = "CONFIDENCE: \(confidence)%"
+        
+        let completeSentence = "This looks like a \(message) and I'm \(confidence) percent sure!"
+        self.synthesizeSpeech(fromString: completeSentence)
     }
 }
 
@@ -197,8 +247,6 @@ extension CameraVC: AVSpeechSynthesizerDelegate {
         self.activityIndicator.isHidden = true
         self.activityIndicator.stopAnimating()
     }
-    
-    
 }
 
 

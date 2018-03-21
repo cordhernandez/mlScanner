@@ -1,0 +1,11 @@
+framework module Archeota {
+  umbrella header "Archeota.h"
+
+  export *
+  module * { export * }
+}
+
+module Archeota.Swift {
+    header "Archeota-Swift.h"
+    requires objc
+}

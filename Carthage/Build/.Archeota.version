@@ -1,0 +1,9 @@
+{
+  "commitish" : "v1.2",
+  "iOS" : [
+    {
+      "hash" : "022e24254708b2a0704574bc7ff21762433fdb4186c5a97b5d8ef3fb44008f7f",
+      "name" : "Archeota"
+    }
+  ]
+}
