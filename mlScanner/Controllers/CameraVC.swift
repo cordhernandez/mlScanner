@@ -99,7 +99,10 @@ class CameraVC: UIViewController {
             if captureSession.canAddOutput(cameraOutput) == true {
                 
                 captureSession.addOutput(cameraOutput)
-                let previewLayer = addPreviewLayer(withLayer: self.previewLayer, andFrom: captureSession)
+                
+                previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                previewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+                previewLayer.connection?.videoOrientation = .portrait
                 
                 cameraView.layer.addSublayer(previewLayer)
                 cameraView.addGestureRecognizer(tap)
@@ -110,18 +113,6 @@ class CameraVC: UIViewController {
         catch {
             LOG.error("Error trying to capture device input from camera, error description: \(error.localizedDescription)")
         }
-    }
-    
-    fileprivate func addPreviewLayer(withLayer layer: AVCaptureVideoPreviewLayer, andFrom session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
-        
-        var previewLayer = layer
-        let captureSession = session
-        
-        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-        previewLayer.connection?.videoOrientation = .portrait
-        
-        return previewLayer
     }
     
     @objc fileprivate func didTapCameraView() {
@@ -174,8 +165,36 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
             let model = try VNCoreMLModel(for: SqueezeNet().model)
             let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
                 
-                self.getCoreMLRequest(from: request, and: error)
-                } as? VNRequestCompletionHandler)
+                if let error = error {
+                    
+                    LOG.error("Error getting request from Core Ml Model, error description: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let results = request.results as? [VNClassificationObservation] else {
+                    
+                    LOG.warn("Can't retreive request results from VNRequest")
+                    return
+                }
+                
+                for classification in results {
+                    
+                    if classification.confidence < 0.5 {
+                        
+                        let message = "I'm sorry I don't know what this is. Please try again."
+                        self.lowConfidenceMessage(message)
+                        
+                        break
+                    }
+                    else {
+                        let identification = classification.identifier
+                        let confidence = Int(classification.confidence * 100)
+                        self.highConfidenceMessage(identification, confidence)
+                        
+                        break
+                    }
+                }
+            })
             
             let handler = VNImageRequestHandler(data: photoData ?? Data())
             try handler.perform([request])
@@ -188,53 +207,20 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
         self.thumbnailCameraImage.image = photoImage
     }
     
-    func getCoreMLRequest(from request: VNRequest, and withError: NSError?) {
-        
-        if let error = withError {
-            
-            LOG.error("Error getting request from Core Ml Model, error description: \(error.localizedDescription)")
-            return
-        }
-        
-        guard let results = request.results as? [VNClassificationObservation] else {
-            
-            LOG.warn("Can't retreive request results from VNRequest")
-            return
-        }
-        
-        for classification in results {
-            
-            if classification.confidence < 0.5 {
-                
-                let message = "I'm sorry I don't know what this is. Please try again."
-                lowConfidenceMessage(message)
-                
-                break
-            }
-            else {
-                let identification = classification.identifier
-                let confidence = Int(classification.confidence * 100)
-                highConfidenceMessage(identification, confidence)
-                
-                break
-            }
-        }
-    }
-    
     func lowConfidenceMessage(_ message: String) {
         
-        self.identificationLabel.text = message
-        self.synthesizeSpeech(fromString: message)
-        self.confidentLabel.isHidden = true
+        identificationLabel.text = message
+        synthesizeSpeech(fromString: message)
+        confidentLabel.isHidden = true
     }
     
     func highConfidenceMessage(_ message: String, _ confidence: Int) {
         
-        self.identificationLabel.text = message
-        self.confidentLabel.text = "CONFIDENCE: \(confidence)%"
+        identificationLabel.text = message
+        confidentLabel.text = "CONFIDENCE: \(confidence)%"
         
         let completeSentence = "This looks like a \(message) and I'm \(confidence) percent sure!"
-        self.synthesizeSpeech(fromString: completeSentence)
+        synthesizeSpeech(fromString: completeSentence)
     }
 }
 
